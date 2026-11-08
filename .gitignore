@@ -1,0 +1,14 @@
+# Python virtual environment and bytecode
+demo/.venv/
+__pycache__/
+*.py[cod]
+
+# Terraform working directory and local state
+demo/.terraform/
+demo/terraform.tfstate
+demo/terraform.tfstate.*
+demo/*.tfstate
+demo/*.tfstate.*
+
+# Ansible retry files
+*.retry
