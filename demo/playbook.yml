@@ -1,0 +1,36 @@
+---
+# Ansible = "stocks and sets up the kitchen".
+# Each task says "make sure X is true". If it already is true, Ansible does
+# nothing and reports it as "ok" (not "changed"). That is idempotence.
+- name: Set up the demo website server
+  hosts: web
+  gather_facts: false
+  vars:
+    greeting: "Hello from Session 7"   # <- the ONE line we edit in the demo
+  tasks:
+    # A bare container has an empty package list. Refresh it once.
+    # "creates" = skip if a package list already exists (keeps re-runs quiet).
+    - name: Refresh the package list (first time only)
+      ansible.builtin.command: apt-get update
+      args:
+        creates: /var/lib/apt/lists/*Packages*
+
+    # Skipped if nginx is already installed.
+    - name: Install the nginx web server
+      ansible.builtin.command: apt-get install -y --no-install-recommends nginx
+      args:
+        creates: /usr/sbin/nginx
+
+    # Changes only when the text in the template changes.
+    - name: Put our web page in place
+      ansible.builtin.template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+        mode: "0644"
+
+    # No systemd in a container, so we start nginx directly.
+    # Skipped if nginx is already running (its pid file exists).
+    - name: Start nginx
+      ansible.builtin.command: nginx
+      args:
+        creates: /run/nginx.pid

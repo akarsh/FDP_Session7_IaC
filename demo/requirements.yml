@@ -1,0 +1,6 @@
+---
+# Install with: ansible-galaxy collection install -r requirements.yml
+# community.docker provides the "docker" connection (talks via the docker CLI).
+collections:
+  - name: community.docker
+    version: "5.4.0"
